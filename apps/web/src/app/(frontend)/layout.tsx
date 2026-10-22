@@ -1,0 +1,1 @@
+export default function FrontendLayout({ children }: { children: React.ReactNode }) { return <html lang="pt-PT"><body style={{margin:0,background:'#0d0d0f',color:'#f0ece8',fontFamily:'Arial,sans-serif'}}>{children}</body></html> }
