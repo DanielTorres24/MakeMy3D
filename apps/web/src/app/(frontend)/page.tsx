@@ -1,0 +1,1 @@
+export default function Home() { return <main style={{maxWidth:920,margin:'auto',padding:'90px 24px'}}><h1 style={{color:'#ff5c35'}}>MakeMy3D</h1><p>Nova plataforma em desenvolvimento. O site público atual mantém-se disponível no GitHub Pages.</p><a href="/admin" style={{color:'#ff8c6a'}}>Entrar no backoffice →</a></main> }
