@@ -1,0 +1,8 @@
+node_modules/
+.next/
+.env
+.env.*
+!.env.example
+*.tsbuildinfo
+src/payload-types.ts
+src/app/(payload)/admin/importMap.js
