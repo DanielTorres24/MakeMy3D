@@ -1,5 +1,4 @@
-import Link from 'next/link';
-export const metadata = { title: 'Área de gestão' };
-export default function Admin() {
-  return <main id="conteudo" className="simple-page"><p className="eyebrow">ÁREA DE GESTÃO</p><h1>O backoffice está<br /><span>em preparação.</span></h1><p>Na fase dedicada ao backoffice, esta área permitirá gerir o catálogo e acompanhar encomendas e pedidos de orçamento da demonstração.</p><div className="notice">Ainda não existe início de sessão nem acesso a dados administrativos. Esta aplicação é uma demonstração local e não deve ser publicada como uma loja de produção.</div><Link className="button" href="/">Voltar ao início <span aria-hidden="true">↗</span></Link></main>;
-}
+import AdminPanel from '@/components/admin-panel';
+import './admin.css';
+export const metadata = { title: 'Backoffice demonstrativo' };
+export default function Admin() { return <main id="conteudo" className="admin-page"><p className="eyebrow">MAKEMY3D · GESTÃO LOCAL</p><h1>Backoffice <span>demo.</span></h1><p className="notice">Demonstração local: sem autenticação de produção, pagamentos ou envio de mensagens. A sessão expira após 2 horas e termina ao reiniciar o servidor.</p><AdminPanel /></main>; }
