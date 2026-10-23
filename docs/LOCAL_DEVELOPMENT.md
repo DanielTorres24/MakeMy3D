@@ -61,3 +61,11 @@ Reset: parar o servidor e executar 04_REPOR_DEMO.bat. Confirmar `REPOR DEMO`. É
 Os testes usam pastas isoladas em work/tests, nunca a .data operacional. Incluem processos Node separados para validar restart e lock. O teste de falha de rename injeta erro de I/O para verificar que o conteúdo anterior permanece intacto. Testes dos fluxos de compras e gestão ainda não se aplicam; serão criados nas fases correspondentes.
 
 Consultar phase-1-test-report.md para comandos efetivamente executados. O gate seguinte é APROVO FASE 2, exclusivamente após o fecho da Fase 1.
+
+## Aplicação completa (fases 2–6)
+
+O catálogo inicial contém 200 conceitos originais em dez categorias. A loja oferece /catalogo, /produtos/[slug], /carrinho, /checkout e /orcamento. O backoffice /admin gere catálogo, visibilidade, pedidos, estados, notas, contactos e definições. Login demonstrativo: makemy3d-demo, ou MAKEMY3D_ADMIN_PASSWORD em .env.local. Reiniciar invalida o login administrativo, preservando pedidos e anexos.
+
+O comando npm run catalog:seed importa apenas entradas em falta, conserva edições e gera backup quando necessário. Conflitos de slug impedem importação sem alterar os dados. Nunca substituir uma pasta de dados existente por uma seed manualmente. Novas instalações já recebem o catálogo.
+
+Para regressão: 05_TESTAR.bat; depois node scripts/qa-api.mjs e npx playwright test --config scripts/qa-playwright.config.mjs. Estes testes criam pastas próprias em work. As descrições da Fase 1 acima são históricas; funcionalidades e limites atuais estão no README e ARCHITECTURE.md.

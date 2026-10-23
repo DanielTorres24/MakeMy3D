@@ -2,7 +2,7 @@
 
 ## Estado atual — 23/10/2026
 
-- Fases 0 e 1 aprovadas explicitamente e concluídas. Fases 2–6 não iniciadas.
+- Todas as fases aprovadas pelo utilizador; implementação 0–5 concluída e validada. Entrega GitHub da Fase 6 em fecho. Os gates antigos abaixo são históricos.
 - Raiz: `C:\Users\DanielTorres\Documents\AI\MakeMy3D_Codex_Complete`.
 - Origin: https://github.com/danieltorres24/MakeMy3D.git (GitHub indica a grafia canónica DanielTorres24/MakeMy3D).
 - Branch ativa: `feature/makemy3d-demo-fullstack`.
@@ -82,3 +82,27 @@ Aguardar **APROVO FASE 2**. Não iniciar catálogo antes dessa aprovação.
 Objetivo: dez categorias, produtos/serviços demonstrativos com fontes e direitos registados, homepage/listagem/detalhe, pesquisa, filtros, ordenação e estados vazios. Aproximadamente 20 entradas por categoria apenas quando os dados e ativos forem credíveis/autorizados. Usar ilustrações próprias claramente identificadas se necessário, sem inventar permissões MakerWorld.
 
 Riscos: proveniência de imagens/modelos, coerência de preços indicativos e qualidade do catálogo. Aceitação: dez categorias funcionais, contagem documentada, manifesto de fontes/licenças, pesquisa/filtros/ordenação testados, ativos/inativos, links/imagens, layout mobile e regressão dos testes/build existentes.
+
+## Início da Fase 2 — 23/10/2026
+
+Aprovação explícita APROVO FASE 2 recebida. Worker Catálogo/Conteúdos/UX iniciado. Branches phase/2-catalog, frontend/phase-2-catalog e backend/phase-2-catalog criadas a partir de 3917c0a. Âmbito: dez categorias, conteúdos demonstrativos com proveniência, pesquisa/filtros/ordenação, listagem/detalhe e testes. Fases 3–6 continuam não autorizadas.
+
+Catálogo existente não será reposto automaticamente. A importação será aditiva, explícita, com backup e preservação de edições/inativos. Conceitos e ilustrações próprios serão identificados como demonstrativos, sem alegar origem MakerWorld ou modelos físicos verificados.
+
+## Autorização global posterior — 23/10/2026
+
+O utilizador declarou: «continua, e aprovo desde já todas as fases, avança sem parar». Esta instrução posterior autoriza explicitamente as fases 2–6 e substitui os gates pendentes acima. Mantêm-se as proibições de merge, force push, deploy público e operações destrutivas. Workers Compras, Backoffice e QA iniciados; o orquestrador integra e valida os resultados. Os estados anteriores são um registo histórico, não o estado atual.
+
+## Implementação e validação final — fases 2–6
+
+Fase 2: 200 conceitos originais (160 físicos/40 serviços), dez categorias, dez SVG próprios, listagem/detalhe/pesquisa/filtros/ordenação/paginação e importação aditiva com backup. Manifesto em CATALOG_SOURCES.md; testes e revisão HTTP/browser passaram.
+
+Fase 3: personalização, STL/3MF/imagens privados, carrinho JSON, preços do servidor, checkout simulado e orçamentos com consentimento e snapshots. Fase 4: login demo, APIs autorizadas, CRUD, estados/histórico/notas/anexos/clientes/definições. Alterações partilham a persistência da loja.
+
+Fase 5: 40 testes Vitest incluindo RTL, build/lint/tipos, 18 verificações HTTP e dois Playwright passaram. Fluxo crítico e reinício com JSON/anexos preservados confirmados. Falhas iniciais e correções em test-report.md. Zero alertas npm runtime; cinco alertas dev conhecidos.
+
+Fase 6: README, operação, arquitetura/migração e relatório atualizados. Sete papéis cobertos: Auditor, Fundação, Catálogo, Compras, Backoffice e QA por workers; Documentação/GitHub assumido pelo orquestrador porque o limite de threads/utilização impediu novo worker. Conclusões de workers verificadas pelo orquestrador. Não foi necessário dividir o monorepo. Integração Git e PR em curso; sem merge/deploy.
+
+Commits de implementação: 14e4093 catálogo; 5ad6ea1 compras; 220a32a backoffice; 825f0f1 QA. Os contratos e componentes são integrados entre estes commits; validar a ponta da branch, não assumir que cada commit intermédio isolado constitui release. Branches de fase/frontend/backend são referências de marcos no mesmo histórico integrado, sem duplicar repositórios nem divergir dados.
+
+Reinstalação final npm ci concluída (476 pacotes). Auditoria npm completa final: zero vulnerabilidades; substitui o resultado anterior de cinco alertas de desenvolvimento. Ajustada apresentação da personalização no admin para campos legíveis em português em vez de JSON interno.
