@@ -1,0 +1,28 @@
+import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ProductGrid } from '@/components/catalog';
+import { getRepository } from '@/server/repository';
+import { catalogQuerySchema, queryCatalog, type CatalogQuery } from '@/server/services/catalog-service';
+export const dynamic = 'force-dynamic';
+export const metadata: Metadata = { title: 'Catálogo de impressão e design 3D', description: 'Explora conceitos de objetos e serviços 3D. Pesquisa por categoria e material; preços indicativos de demonstração.' };
+function pageHref(query: CatalogQuery, page: number) {
+  const params = new URLSearchParams();
+  for (const [key, value] of Object.entries({ ...query, page })) if (value !== '') params.set(key, String(value));
+  return `/catalogo?${params}`;
+}
+export default async function CatalogPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  const raw = Object.fromEntries(Object.entries(await searchParams).map(([key, value]) => [key, Array.isArray(value) ? value[0] : value]));
+  const parsed = catalogQuerySchema.safeParse(raw);
+  const query = parsed.success ? parsed.data : catalogQuerySchema.parse({});
+  const result = queryCatalog(await getRepository().read(), query);
+  const selected = result.categories.find((category) => category.slug === query.category);
+  const pageNumbers = [...new Set([1, result.page - 1, result.page, result.page + 1, result.pages])].filter((page) => page > 0 && page <= result.pages).sort((a, b) => a - b);
+  return <main id="conteudo" className="catalog-page"><header className="catalog-intro"><p className="eyebrow">EXPLORAR / CRIAR / EXPERIMENTAR</p><h1>{selected ? selected.name : <>Uma ideia para<br /><span>cada possibilidade.</span></>}</h1><p className="muted">{selected?.description ?? 'Objetos úteis, detalhes pessoais e serviços para dar forma ao próximo projeto.'}</p><p className="catalog-disclaimer">Catálogo demonstrativo · Conceitos e ilustrações, sem modelos prontos para fabrico. Preços e dimensões indicativos.</p></header>
+    <div className="category-chips" aria-label="Explorar categorias"><Link href="/catalogo" aria-current={!query.category ? 'page' : undefined}>Todas</Link>{result.categories.map((category) => <Link key={category.id} href={`/catalogo?category=${category.slug}`} aria-current={query.category === category.slug ? 'page' : undefined}>{category.name}<span>{category.productCount}</span></Link>)}</div>
+    {!parsed.success && <p className="notice" role="alert">Os filtros da ligação não são válidos. Apresentamos o catálogo completo; escolhe novos filtros abaixo.</p>}
+    <form action="/catalogo" method="get" className="catalog-filters" aria-label="Pesquisar e filtrar catálogo"><div className="search-field"><label htmlFor="q">Pesquisar</label><input id="q" name="q" type="search" placeholder="Ex.: suporte, nome, modelação…" defaultValue={query.q} maxLength={100} /></div><div><label htmlFor="category">Categoria</label><select id="category" name="category" defaultValue={query.category}><option value="">Todas as categorias</option>{result.categories.map((category) => <option key={category.id} value={category.slug}>{category.name}</option>)}</select></div><div><label htmlFor="kind">Tipo</label><select id="kind" name="kind" defaultValue={query.kind}><option value="">Objetos e serviços</option><option value="physical">Objetos</option><option value="service">Serviços</option></select></div><div><label htmlFor="material">Material</label><select id="material" name="material" defaultValue={query.material}><option value="">Todos os materiais</option><option value="PLA">PLA</option><option value="PETG">PETG</option></select></div><div><label htmlFor="sort">Ordenar por</label><select id="sort" name="sort" defaultValue={query.sort}><option value="featured">Destaques</option><option value="price-asc">Preço: menor primeiro</option><option value="price-desc">Preço: maior primeiro</option><option value="name">Nome: A–Z</option></select></div><button type="submit" className="button filter-submit">Aplicar filtros <span aria-hidden="true">→</span></button></form>
+    <div className="results-bar"><p><strong>{result.total}</strong> {result.total === 1 ? 'resultado' : 'resultados'}{query.q && <> para «{query.q}»</>}{result.total > 0 && <span className="muted"> · Página {result.page} de {result.pages}</span>}</p><Link href="/catalogo" className="text-link">Limpar filtros</Link></div>
+    {result.items.length ? <ProductGrid products={result.items} categories={result.categories} /> : <div className="empty-state"><p className="eyebrow">AINDA SEM RESULTADOS</p><h2>{result.categories.length ? 'Vamos tentar outra ideia?' : 'O catálogo está a ser preparado.'}</h2><p className="muted">{result.categories.length ? 'Experimenta menos palavras ou uma combinação diferente de filtros.' : 'Volta em breve para descobrir os objetos e serviços disponíveis.'}</p><Link href="/catalogo" className="button">Ver todo o catálogo <span aria-hidden="true">↗</span></Link></div>}
+    {result.pages > 1 && <nav className="pagination" aria-label="Páginas do catálogo">{result.page > 1 && <Link href={pageHref(query, result.page - 1)} rel="prev">← Anterior</Link>}{pageNumbers.map((page, index) => <span className="pagination-item" key={page}>{index > 0 && pageNumbers[index - 1] < page - 1 && <span aria-hidden="true">…</span>}<Link href={pageHref(query, page)} aria-label={`Página ${page}`} aria-current={page === result.page ? 'page' : undefined}>{page}</Link></span>)}{result.page < result.pages && <Link href={pageHref(query, result.page + 1)} rel="next">Seguinte →</Link>}</nav>}
+  </main>;
+}

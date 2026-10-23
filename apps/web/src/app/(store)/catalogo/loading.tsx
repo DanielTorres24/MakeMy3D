@@ -1,0 +1,1 @@
+export default function Loading() { return <main id="conteudo" className="simple-page" aria-busy="true"><p className="eyebrow">CATÁLOGO</p><h1>A preparar as ideias…</h1><p>A carregar os objetos e serviços disponíveis.</p></main>; }

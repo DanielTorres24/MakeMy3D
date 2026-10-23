@@ -117,9 +117,9 @@ describe('persistência JSON local', () => {
   });
 });
 describe('contratos do domínio', () => {
-  it('seed versionado válido não inventa produtos ou clientes', () => {
+  it('seed versionado contém catálogo demo e não inventa clientes', () => {
     const seed = storeSchema.parse(createInitialStore());
-    expect(seed.products).toEqual([]);
+    expect(seed.products).toHaveLength(200);
     expect(seed.customers).toEqual([]);
     expect(seed.settings.currency).toBe('EUR');
   });

@@ -36,9 +36,10 @@ async function main() {
     console.log('Lock preservado em cópia de recuperação. Os dados não foram alterados.');
     return;
   }
-  if (action !== 'seed' && action !== 'reset') throw new Error('Utilize seed, reset ou recover-lock.');
+  if (action !== 'seed' && action !== 'reset' && action !== 'catalog') throw new Error('Utilize seed, catalog, reset ou recover-lock.');
   const repository = new JsonStoreRepository(directory);
   try {
+    if (action === 'catalog') { console.log(JSON.stringify(await repository.addCatalog(), null, 2)); return; }
     if (action === 'seed') { await repository.read(); console.log('Dados válidos; seed criado apenas se inexistente.'); return; }
     console.log(`Reposição da demonstração em ${directory}. O servidor deve estar parado.`);
     console.log('O JSON atual terá uma cópia de segurança. Uploads e backups anteriores não serão apagados.');

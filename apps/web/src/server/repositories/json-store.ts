@@ -1,3 +1,4 @@
+import { planCatalogAddition } from '../seeds/catalog';
 import { constants } from 'node:fs';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { mkdir, open, readFile, rename, unlink, copyFile, lstat, realpath } from 'node:fs/promises';
@@ -104,6 +105,26 @@ export class JsonStoreRepository implements StoreRepository {
       await this.assertRegularFile(this.file);
       await this.write(valid);
       return structuredClone(valid);
+    });
+  }
+
+  /** Explicit migration, under the same lease and queue as every other write. */
+  addCatalog(): Promise<{ categories: number; products: number; backup: string | null }> {
+    return this.serialized(async () => {
+      await this.initialize();
+      const draft = await this.load();
+      const addition = planCatalogAddition(draft);
+      if (!addition.categories.length && !addition.products.length) return { categories: 0, products: 0, backup: null };
+      draft.categories.push(...addition.categories);
+      draft.products.push(...addition.products);
+      draft.revision += 1;
+      draft.updatedAt = new Date().toISOString();
+      const valid = storeSchema.parse(draft);
+      await this.assertRegularFile(this.file);
+      const backup = path.join(this.directory, `store-before-catalog-${Date.now()}-${randomUUID()}.json`);
+      await copyFile(this.file, backup, constants.COPYFILE_EXCL);
+      await this.write(valid);
+      return { categories: addition.categories.length, products: addition.products.length, backup };
     });
   }
 
