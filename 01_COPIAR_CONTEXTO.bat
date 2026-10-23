@@ -1,30 +1,20 @@
 @echo off
 setlocal EnableExtensions
-set "SRC=%~dp0"
-set "DEST=%USERPROFILE%\Projects\MakeMy3D"
-if not exist "%DEST%\.git" (
- echo Nao foi encontrado um repositorio Git em "%DEST%".
- echo Execute 00_CLONAR_MAKEMY3D.bat ou copie manualmente estes ficheiros.
- pause
- exit /b 1
+cd /d "%~dp0"
+if not exist "AGENTS.md" (
+  echo Nao foi encontrado AGENTS.md nesta pasta.
+  exit /b 1
 )
-if not exist "%DEST%\docs" mkdir "%DEST%\docs"
-for %%F in (AGENTS.md PROMPT_INICIAL_CODEX.md) do (
- if exist "%DEST%\%%F" (
-  echo JA EXISTE: %%F - nao substituido.
- ) else (
-  copy "%SRC%%%F" "%DEST%\%%F" >nul
-  echo COPIADO: %%F
- )
+if not exist "docs\PROJECT_MASTER_CONTEXT.md" (
+  echo Nao foi encontrado o contexto mestre em docs.
+  exit /b 1
 )
-for %%F in (PROJECT_MASTER_CONTEXT.md MAKEMY3D_WORKERS_APPROVAL_WORKFLOW.md) do (
- if exist "%DEST%\docs\%%F" (
-  echo JA EXISTE: docs\%%F - nao substituido.
- ) else (
-  copy "%SRC%docs\%%F" "%DEST%\docs\%%F" >nul
-  echo COPIADO: docs\%%F
- )
+if not exist "docs\MAKEMY3D_WORKERS_APPROVAL_WORKFLOW.md" (
+  echo Nao foi encontrado o workflow de aprovacao em docs.
+  exit /b 1
 )
-echo.
-echo Agora abra "%DEST%" no Codex Local.
-pause
+echo O contexto ja se encontra na raiz deste projeto:
+echo %CD%
+echo Nao e necessario copiar ficheiros para outra pasta.
+echo Consulte docs\WORK_PROGRESS.md para retomar a fase aprovada.
+exit /b 0

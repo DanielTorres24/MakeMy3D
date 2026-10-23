@@ -1,26 +1,20 @@
 @echo off
-setlocal
-set "BASE=%USERPROFILE%\Projects"
-if not exist "%BASE%" mkdir "%BASE%"
+setlocal EnableExtensions
+cd /d "%~dp0"
+if not exist ".git" (
+  echo Esta pasta ainda nao contem o repositorio MakeMy3D.
+  echo Consulte docs\implementation-plan.md antes de preparar uma copia Git.
+  echo Nenhuma pasta externa foi criada ou modificada.
+  exit /b 1
+)
 where git >nul 2>&1
 if errorlevel 1 (
- echo Git nao encontrado. Instale Git for Windows antes de continuar.
- pause
- exit /b 1
+  echo Git nao encontrado. Instale Git for Windows para inspecionar o repositorio.
+  exit /b 1
 )
-if exist "%BASE%\MakeMy3D\.git" (
- echo Repositorio ja existe em "%BASE%\MakeMy3D". Nenhum ficheiro foi substituido.
-) else (
- git clone https://github.com/danieltorres24/MakeMy3D.git "%BASE%\MakeMy3D"
- if errorlevel 1 (
-   echo Falha ao clonar. Confirme acesso ao repositorio e a ligacao.
-   pause
-   exit /b 1
- )
-)
-echo.
-echo Repositorio: "%BASE%\MakeMy3D"
-echo Agora copie AGENTS.md e docs deste pacote para a raiz do repositorio.
-echo Abra esta pasta no Codex e escolha Local.
-explorer "%BASE%\MakeMy3D"
-pause
+echo O repositorio ja esta preparado nesta pasta:
+echo %CD%
+git remote -v
+if errorlevel 1 exit /b 1
+echo Para instalar a aplicacao, execute 01_INSTALAR.bat.
+exit /b 0
