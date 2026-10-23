@@ -15,7 +15,7 @@ const port = Number(portText);
 const hostname = '127.0.0.1';
 const app = next({ dev, dir: directory, hostname, port });
 const handler = app.getRequestHandler();
-const server = createServer((request, response) => { handler(request, response).catch(() => { if (!response.headersSent) response.writeHead(500); response.end('Erro interno.'); }); });
+const server = createServer((request, response) => { if (![hostname + ':' + port, 'localhost:' + port].includes(request.headers.host)) { response.writeHead(403); response.end('Host não autorizado.'); return; } handler(request, response).catch(() => { if (!response.headersSent) response.writeHead(500); response.end('Erro interno.'); }); });
 let stopping = false;
 async function shutdown() {
   if (stopping) return;
