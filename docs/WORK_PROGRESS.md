@@ -2,7 +2,7 @@
 
 ## Estado atual — 23/10/2026
 
-- Todas as fases aprovadas pelo utilizador; implementação 0–5 concluída e validada. Entrega GitHub da Fase 6 em fecho. Os gates antigos abaixo são históricos.
+- Todas as fases aprovadas pelo utilizador; fases 0–6 concluídas. Pull Request draft #2 criado e branch enviada. Os gates antigos abaixo são históricos.
 - Raiz: `C:\Users\DanielTorres\Documents\AI\MakeMy3D_Codex_Complete`.
 - Origin: https://github.com/danieltorres24/MakeMy3D.git (GitHub indica a grafia canónica DanielTorres24/MakeMy3D).
 - Branch ativa: `feature/makemy3d-demo-fullstack`.
@@ -106,3 +106,11 @@ Fase 6: README, operação, arquitetura/migração e relatório atualizados. Set
 Commits de implementação: 14e4093 catálogo; 5ad6ea1 compras; 220a32a backoffice; 825f0f1 QA. Os contratos e componentes são integrados entre estes commits; validar a ponta da branch, não assumir que cada commit intermédio isolado constitui release. Branches de fase/frontend/backend são referências de marcos no mesmo histórico integrado, sem duplicar repositórios nem divergir dados.
 
 Reinstalação final npm ci concluída (476 pacotes). Auditoria npm completa final: zero vulnerabilidades; substitui o resultado anterior de cinco alertas de desenvolvimento. Ajustada apresentação da personalização no admin para campos legíveis em português em vez de JSON interno.
+
+## Entrega concluída
+
+PR draft criado: https://github.com/DanielTorres24/MakeMy3D/pull/2. Base main 35a44142f7bdb867a3744f3c1b45306407cf7b6d preservada. Branch feature/makemy3d-demo-fullstack enviada; referências por fase e frontend/backend publicadas por fast-forward. Commits adicionais 28d9a16 apresentação admin e e3a3c89 documentação/evidências.
+
+Após reinstalação, lint/tipos/40 testes/build passaram novamente; Playwright repetido: 2/2 passaram. O lock do servidor antigo encerrado foi recuperado pelo comando conservador (PID comprovadamente inexistente, lock preservado em cópia). Importação do catálogo operacional foi idempotente: zero produtos/categorias acrescentados, sem reset. Dados existentes preservados. Servidores de teste encerrados; iniciar com 02_INICIAR_LOJA.bat.
+
+Próximo passo: revisão humana do PR. Não existem fases de implementação pendentes; merge, deploy e conversão para produção continuam a exigir autorização específica. O historial anterior de gates fica conservado como registo, substituído pela aprovação global posterior.
