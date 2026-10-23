@@ -1,75 +1,84 @@
 # MakeMy3D — Progresso de execução
 
-## Estado em 22/10/2026
+## Estado atual — 23/10/2026
 
-- Fase 0 aprovada explicitamente pelo utilizador e concluída em auditoria/planeamento.
-- Fases 1–6: não iniciadas, dependem de aprovação individual.
+- Fases 0 e 1 aprovadas explicitamente e concluídas. Fases 2–6 não iniciadas.
 - Raiz: `C:\Users\DanielTorres\Documents\AI\MakeMy3D_Codex_Complete`.
-- Repositório: https://github.com/danieltorres24/MakeMy3D.git
+- Origin: https://github.com/danieltorres24/MakeMy3D.git (GitHub indica a grafia canónica DanielTorres24/MakeMy3D).
 - Branch ativa: `feature/makemy3d-demo-fullstack`.
-- Baseline main: `35a44142f7bdb867a3744f3c1b45306407cf7b6d`.
-- Commit de contexto e plano: `6c7228709a94422708f5fa5925bfbb61c4e5bd21`.
-- Este registo será guardado num segundo commit `docs(phase-0): record audit results and next approval gate`; consultar `git log -2 --oneline` para o seu SHA.
-- Push tentado e falhou; branch remota de desenvolvimento não encontrada na verificação subsequente. PR não criado: previsto na Fase 6.
+- Commit de implementação da Fase 1: `a2e7244e4b4bff99691685d80c119321a95fe372`, enviado com sucesso para origin.
+- Este fecho, documentação e screenshots são guardados no commit `docs(phase-1): record validation, operation guide and approval gate`; consultar `git log -2 --oneline` para o SHA do fecho.
+- Main e index.html original preservados. Sem merge na main, force push, pagamentos, deploy ou novo repositório. PR reservado à Fase 6.
+- Servidores de teste encerrados normalmente; nenhum servidor de demonstração foi deixado em execução por esta entrega.
 
-## Realizado na Fase 0
+## Fase 0 — Auditor / Arquiteto
 
-1. Leitura integral das instruções e documentos fornecidos; inspeção dos scripts de preparação.
-2. Pasta indicada inicialmente só com contexto. Cópia Git obtida do origin e adicionada à raiz solicitada sem sobrescrever os ficheiros existentes. Histórico e index.html preservados.
-3. Auditoria do site publicado (HTTP/HTML), main e branch Payload. Worker 0 Auditor/Arquiteto ativado e relatório recebido; nenhum worker de fase futura iniciado.
-4. Plano detalhado em `docs/implementation-plan.md`, incluindo reaproveitamento, lacunas, riscos, arquitetura, contratos, persistência, licenças, branches, sete workers e testes de aceitação.
-5. Um repositório escolhido; Next.js integrado em apps/web previsto. Não há necessidade de novos repositórios para a demo.
-6. Branch de integração criada. Marcos `phase/0-audit`, `frontend/makemy3d-demo` e `backend/makemy3d-demo` apontarão para o fecho local da auditoria. Branches de fases futuras só serão criadas mediante aprovação.
-7. Contexto original versionado, sem converter stack nem alterar o HTML existente.
+Aprovação APROVO FASE 0 recebida em 22/10/2026. Lidos AGENTS.md e todos os documentos fornecidos. A pasta continha apenas o pacote de instruções; foi adicionada cópia Git integral do origin sem sobrescrever os oito ficheiros existentes. A cópia alternativa em Projects/MakeMy3D foi apenas inspecionada, não modificada.
 
-## Verificações efetivamente executadas
+Baseline main: `35a44142f7bdb867a3744f3c1b45306407cf7b6d`, somente index.html. Branch histórica Payload preservada: e698ce8, scaffold de 16 ficheiros/commits adicionais. Site público devolveu HTTP 200 e HTML igual ao ficheiro local após normalização. Sintaxe do JavaScript inline e git fsck passaram; não havia aplicação Node na main.
 
-| Verificação | Resultado |
-| --- | --- |
-| git ls-remote --symref origin HEAD | main confirmada, SHA inicial acima |
-| git remote -v | Origin corresponde ao repositório solicitado |
-| git log --all / ls-tree / branch -a | Main com um HTML; scaffold Payload em branch separada |
-| git fsck --full | Código de saída 0, sem erros reportados |
-| HTTP GET do site GitHub Pages | 200, 54 232 bytes reportados |
-| Comparação do HTML publicado/local | Igual após normalização de fim de linha e trim |
-| node --check do script inline extraído | Um bloco validado; apenas sintaxe, não comportamento |
-| Contagem estática | Seis cartões, zero elementos form |
-| git diff --exit-code -- index.html | Baseline preservada |
-| git diff --cached --check inicial | Assinalou três hard breaks Markdown preexistentes no PROJECT_MASTER_CONTEXT; mantidos para preservar o original |
-| Verificação do plano e check com blank-at-eol desativado | Passou; nenhuma configuração Git persistente alterada |
-| git commit | Commit 6c72287 criado com sucesso |
-| git push -u origin feature/makemy3d-demo-fullstack | Falhou ao executar Git Credential Manager/bash no sandbox; nenhum push confirmado |
-| git ls-remote da branch de desenvolvimento após falha | Sem ref devolvida |
+Worker Auditor/Arquiteto executou auditoria adicional read-only. Plano em docs/implementation-plan.md. Reutilizar identidade escura/laranja e conceitos de domínio; não adotar Payload/PostgreSQL na demo. Main tem seis exemplos e interações visuais, sem catálogo funcional, submissão ou persistência.
 
-Não executados: instalação de dependências, servidor Next, lint, typecheck, build, unitários/componentes/e2e, validação visual de browser ou scripts .bat. Não existe aplicação Node na main para testar; implementação e testes correspondentes começam na Fase 1 aprovada. Os ficheiros de inspeção temporários estão no workspace do chat, fora do repositório.
+Commits: `6c72287` (contexto/plano), `294a237` (registo). Push inicialmente bloqueado pelo Git Credential Manager no sandbox; execução autorizada fora do sandbox resolveu o bloqueio na Fase 1. Origem remota confirmou 294a237 antes da implementação.
 
-## Bloqueios e limitações
+## Fase 1 — Fundação Full-Stack
 
-- Acesso de escrita à raiz foi concedido. Para o commit foi também necessário acesso específico a `.git`, após erro Permission denied em index.lock; a nova permissão permitiu o commit.
-- Push bloqueado pelo ambiente: `NtCreateDirectoryObject ... 0xC0000022`, seguido de falha em `git credential-manager get` e `could not read Username`. Não foi solicitada nem exposta qualquer credencial. `gh` não está no PATH.
-- Para retomar o envio num terminal autorizado nesta raiz: `git push -u origin feature/makemy3d-demo-fullstack`; depois enviar as branches auxiliares com `git push origin phase/0-audit frontend/makemy3d-demo backend/makemy3d-demo`. Confirmar primeiro remote, estado e autenticação; nunca force push.
-- Se o bloqueio persistir na entrega, avaliar conector GitHub sem perder correspondência dos commits locais. Não afirmar publicação antes da verificação remota.
-- Site auditado por código e HTTP; aparência e acessibilidade ainda não validadas em browser.
-- Scripts de contexto antigos usam outra pasta; não executados. Scripts operacionais serão criados/testados na Fase 1.
+Aprovação APROVO FASE 1 recebida; mensagem posterior continua manteve o âmbito. Worker Fundação implementou código, scripts e testes; orquestrador reviu o armazenamento/configuração, corrigiu scripts legados, concluiu testes de instalação/produção/visual, documentação e Git. Não foram iniciados workers de fases futuras.
 
-## Decisões e riscos
+### Implementado
 
-Consultar `implementation-plan.md`. Preservar tema escuro/laranja e baseline HTML. Adaptar conceitos da branch Payload sem incorporar Payload/PostgreSQL. JSON privado, escritas atómicas e serializadas numa instância, seeds explícitos, valores em cêntimos, anexos privados, sessões demo e nenhuma operação de pagamento real. Catálogo/ativos só com proveniência identificada; testemunhos e promessas existentes não estão comprovados. GitHub Pages não aloja o backend Node/JSON.
+- Workspace npm com aplicação apps/web; Next 16.4.2, React 19.3.1, TypeScript strict, Tailwind 4.3.3, Zod 4.6.7 e Vitest 5.0.5, lockfile versionado.
+- UI base pt-PT responsiva, header/footer, hero/processo reutilizando a identidade, página /admin de preparação, páginas de erro/404 e ligação para saltar ao conteúdo. Sem simular funcionalidades ainda ausentes.
+- Contratos das entidades, interfaces de repositório, seed vazio com definições demonstrativas e serviço /api/health dinâmico sem dados privados.
+- JSON fora de public; validação, snapshot único, fila read-modify-write, lock exclusivo entre processos, temporário+sync+rename, proteção de diretório, backup/reset confirmado e recuperação conservadora de locks órfãos.
+- Configuração partilhada servidor/CLI/scripts, para que reset e aplicação usem a mesma pasta; variáveis de terminal prevalecem sobre .env.local/.env; configurações por modo divergentes recusadas.
+- Host Node local 127.0.0.1 com API custom server Next, encerramento controlado e IPC privado nos wrappers. Não usa endpoint HTTP de shutdown.
+- Cinco scripts Windows: 01_INSTALAR, 02_INICIAR_LOJA, 03_ABRIR_BACKOFFICE, 04_REPOR_DEMO, 05_TESTAR. Scripts legados 00_CLONAR/01_COPIAR agora verificam a raiz atual, sem operar outra pasta.
+- README.md, docs/LOCAL_DEVELOPMENT.md, docs/phase-1-test-report.md e capturas em docs/evidence.
 
-## Etapas e workers
+### Verificações realizadas
 
-| Fase / worker | Estado | Commit/testes | Bloqueios |
-| --- | --- | --- | --- |
-| 0 — Auditor / Arquiteto | Concluída localmente | 6c72287 + commit deste registo; verificações acima | Push não concluído |
-| 1 — Fundação Full-Stack | Aguarda aprovação | Não executados | — |
-| 2 — Catálogo / Conteúdos / UX | Não iniciada | — | — |
-| 3 — Personalização / Compras / Uploads | Não iniciada | — | — |
-| 4 — Backoffice / Integração | Não iniciada | — | — |
-| 5 — QA / Segurança / Performance | Não iniciada | — | — |
-| 6 — GitHub / Documentação / Entrega | Não iniciada | — | Resolver acesso de push antes da entrega |
+- 01_INSTALAR.bat: npm ci real, 424 pacotes, saída 0.
+- 05_TESTAR.bat final: lint, typecheck, 17 testes em dois ficheiros, build; saída 0.
+- Testes cobrem concorrência, outro processo, restart, callback inválida, falha I/O, JSON/schema inválido, backup/reset, preservação de anexos, contratos e configuração env.
+- 02_INICIAR_LOJA.bat --smoke: desenvolvimento 3101; três rotas 200, saída 0; repetição preservou dados e removeu lock.
+- Servidor de produção local 3102: /, /admin, /api/health com 200; JSON privado e rota inexistente com 404. Restart preservou SHA256 e0d7281ed4daaaa27a649be6d2e9ba568658a6b03093b4ce0501c7eef9344c1e e removeu lock.
+- 03_ABRIR_BACKOFFICE.bat --no-browser: passou com servidor ativo, /admin confirmado.
+- 04_REPOR_DEMO.bat: cancelamento e confirmação com backup testados em pasta isolada; sem dados operacionais destruídos.
+- Capturas desktop 1440×1100 e mobile 390×1000 inspecionadas; sem sobreposições ou corte horizontal visível no viewport capturado.
+- node --check scripts, git diff --check, baseline index.html e regras de gitignore passaram.
+- npm audit --omit=dev: zero vulnerabilidades reportadas. Auditoria completa: cinco ocorrências high na cadeia de lint; detalhe abaixo e no relatório.
 
-## Próxima fase e ação exata
+### Falhas resolvidas e limitações
 
-Aguardar `APROVO FASE 1`. Não iniciar código da Fase 1 antes dessa mensagem.
+Instalação sandbox falhou em symlink workspace; concluída com acesso apropriado. Temp virtual bloqueou rename nos primeiros testes; casos agora isolados em work/tests. Lint inicial corrigido. Encerramento forçado substituído por IPC controlado. Configuração de dados unificada e testada. Primeira captura de outro contexto não alcançou o servidor; execução conjunta confirmou o funcionamento e produziu as capturas finais.
 
-Âmbito proposto: aplicação Next.js/React/TypeScript/Tailwind em apps/web, camadas de domínio/API/repositórios, JSON local seguro, seed/reset, UI base e scripts 01_INSTALAR.bat, 02_INICIAR_LOJA.bat, 03_ABRIR_BACKOFFICE.bat, 04_REPOR_DEMO.bat e 05_TESTAR.bat. Instalar e fixar dependências; executar lint, typecheck, build, testes de persistência/restart/concorrência/erros/reset e validar scripts Windows. Preservar index.html. Riscos principais: compatibilidade das dependências e operações de filesystem no Windows.
+Cinco ocorrências high de desenvolvimento na cadeia eslint-config-next → @next/eslint-plugin-next → fast-glob → micromatch → braces (GHSA-vfj7-8cjw-p6xm). Braces consultado: 3.0.3; npm sugere downgrade incompatível do preset Next. Não aplicado audit fix --force. Rever dependências na Fase 5; não alimentar lint com padrões não confiáveis. A ausência de alertas de runtime não garante segurança de produção.
+
+Ainda não há catálogo, personalização, carrinho, encomendas, orçamentos, uploads ou autenticação administrativa; pertencem às fases 2–4. Não foi executada uma auditoria de acessibilidade completa nem e2e dos fluxos comerciais. Persistência suporta uma única instância local, não rede/múltiplos servidores. Dados, .env, backups, uploads e dependências não são versionados.
+
+## Branches
+
+A branch de integração contém a implementação e o registo aprovado. `phase/0-audit` conserva o fecho da auditoria. `phase/1-foundation`, `frontend/phase-1-foundation`, `backend/phase-1-foundation`, `frontend/makemy3d-demo` e `backend/makemy3d-demo` são avançadas por fast-forward para o fecho comum da fundação: ainda não existe trabalho divergente a integrar. Branch Payload e main não são alteradas.
+
+Push da implementação a2e7244 confirmado. O commit documental e as referências auxiliares são enviados no fecho; conferir `git ls-remote origin` e `git status -sb`. O PR será preparado na Fase 6, sem merge.
+
+## Etapas
+
+| Fase / worker | Estado | Evidência |
+| --- | --- | --- |
+| 0 — Auditor / Arquiteto | Concluída | 6c72287, 294a237; implementation-plan.md |
+| 1 — Fundação Full-Stack | Concluída | a2e7244 + commit de fecho; 17 testes, build e scripts; phase-1-test-report.md |
+| 2 — Catálogo / Conteúdos / UX | Aguarda aprovação | Não iniciada |
+| 3 — Personalização / Compras / Uploads | Não iniciada | — |
+| 4 — Backoffice / Integração | Não iniciada | — |
+| 5 — QA / Segurança / Performance | Não iniciada | Rever também alertas dev de dependências |
+| 6 — GitHub / Documentação / Entrega | Não iniciada | PR e revisão final reservados |
+
+## Próxima fase — proposta e gate
+
+Aguardar **APROVO FASE 2**. Não iniciar catálogo antes dessa aprovação.
+
+Objetivo: dez categorias, produtos/serviços demonstrativos com fontes e direitos registados, homepage/listagem/detalhe, pesquisa, filtros, ordenação e estados vazios. Aproximadamente 20 entradas por categoria apenas quando os dados e ativos forem credíveis/autorizados. Usar ilustrações próprias claramente identificadas se necessário, sem inventar permissões MakerWorld.
+
+Riscos: proveniência de imagens/modelos, coerência de preços indicativos e qualidade do catálogo. Aceitação: dez categorias funcionais, contagem documentada, manifesto de fontes/licenças, pesquisa/filtros/ordenação testados, ativos/inativos, links/imagens, layout mobile e regressão dos testes/build existentes.
