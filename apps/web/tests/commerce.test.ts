@@ -1,0 +1,20 @@
+import {afterEach,beforeEach,describe,it,expect} from 'vitest';
+import {mkdtemp,mkdir,rm} from 'node:fs/promises';
+import path from 'node:path';
+import {JsonStoreRepository} from '../src/server/repositories/json-store';
+import {addItem,changeItem,removeItem,createCustomerSession,getCart,checkout,createQuote} from '../src/server/services/commerce-service';
+import {customizationSchema} from '../src/domain/schemas';
+let repo:JsonStoreRepository,folder:string,owner:string,productId:string;
+const root=path.resolve('../../work/tests');
+const customization=customizationSchema.parse({text:'Daniel',colour:'Laranja',material:'PLA',dimensions:'100 × 80 mm',notes:'Para demonstração'});
+const contact={customer:{name:'Cliente Demo',email:'demo@example.test',phone:''},consent:true};
+beforeEach(async()=>{await mkdir(root,{recursive:true});folder=await mkdtemp(path.join(root,'commerce-'));repo=new JsonStoreRepository(folder);owner=await createCustomerSession(repo);productId=(await repo.read()).products.find(p=>p.priceCents!==null&&p.materials?.includes('PLA'))!.id;});
+afterEach(async()=>{await repo.close();if(path.dirname(folder)!==root||!path.basename(folder).startsWith('commerce-'))throw Error('Unsafe cleanup');await rm(folder,{recursive:true,force:true});});
+describe('comércio persistente',()=>{
+ it('preserva opções, altera quantidade e remove artigos',async()=>{let cart=await addItem(repo,owner,{productId,quantity:2,customization});expect(cart.items[0].customization).toEqual(customization);cart=await changeItem(repo,owner,{id:cart.items[0].id,quantity:3});expect(cart.totalCents).toBe(cart.items[0].unitPriceCents*3);cart=await removeItem(repo,owner,cart.items[0].id);expect(cart.items).toHaveLength(0);});
+ it('recalcula preço atual no servidor e guarda snapshot imutável',async()=>{await addItem(repo,owner,{productId,quantity:2,customization});await repo.update(s=>{s.products.find(p=>p.id===productId)!.priceCents=1234;});const order=await checkout(repo,owner,contact);expect(order.totalCents).toBe(2468);expect(order.items[0].customization.text).toBe('Daniel');await repo.update(s=>{s.products.find(p=>p.id===productId)!.priceCents=9999;});expect((await repo.read()).orders[0].items[0].unitPriceCents).toBe(1234);expect((await getCart(repo,owner)).items).toHaveLength(0);await repo.close();repo=new JsonStoreRepository(folder);expect((await repo.read()).orders[0].reference).toBe(order.reference);});
+ it('submissões simultâneas não duplicam a encomenda',async()=>{await addItem(repo,owner,{productId,quantity:1,customization});const results=await Promise.allSettled([checkout(repo,owner,contact),checkout(repo,owner,contact)]);expect(results.filter(r=>r.status==='fulfilled')).toHaveLength(1);expect((await repo.read()).orders).toHaveLength(1);});
+ it('não aceita preço cliente, consentimento ausente ou quantidades inválidas',async()=>{await expect(addItem(repo,owner,{productId,quantity:1,customization,unitPriceCents:1})).rejects.toThrow();await expect(addItem(repo,owner,{productId,quantity:0,customization})).rejects.toThrow();await addItem(repo,owner,{productId,quantity:1,customization});await expect(checkout(repo,owner,{customer:contact.customer,consent:false})).rejects.toThrow();expect((await getCart(repo,owner)).items).toHaveLength(1);});
+ it('não compra produtos desativados nem perde carrinho após falha',async()=>{await addItem(repo,owner,{productId,quantity:1,customization});await repo.update(s=>{s.products.find(p=>p.id===productId)!.active=false;});await expect(checkout(repo,owner,contact)).rejects.toThrow('indisponível');expect((await getCart(repo,owner)).items[0].available).toBe(false);});
+ it('orçamento independente persistido com quantidade e contacto',async()=>{const quote=await createQuote(repo,owner,{...contact,description:'Preciso de modelar uma peça de demonstração.',customization,quantity:4});expect(quote.reference).toMatch(/^ORC-/);expect(quote.quantity).toBe(4);expect((await repo.read()).quotes).toHaveLength(1);await repo.close();repo=new JsonStoreRepository(folder);expect((await repo.read()).quotes[0].customization).toEqual(customization);});
+});

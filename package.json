@@ -2,8 +2,12 @@
   "name": "makemy3d",
   "private": true,
   "version": "0.1.0",
-  "workspaces": ["apps/web"],
-  "engines": {"node": ">=22.0.0"},
+  "workspaces": [
+    "apps/web"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
   "scripts": {
     "dev": "npm run dev --workspace @makemy3d/web",
     "build": "npm run build --workspace @makemy3d/web",
@@ -13,6 +17,7 @@
     "test": "npm run test --workspace @makemy3d/web",
     "check": "npm run lint && npm run typecheck && npm test && npm run build",
     "seed": "npm run seed --workspace @makemy3d/web",
-    "reset": "npm run reset --workspace @makemy3d/web"
+    "reset": "npm run reset --workspace @makemy3d/web",
+    "catalog:seed": "npm run catalog:seed --workspace @makemy3d/web"
   }
 }
