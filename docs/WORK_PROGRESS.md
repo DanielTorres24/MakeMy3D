@@ -114,3 +114,11 @@ PR draft criado: https://github.com/DanielTorres24/MakeMy3D/pull/2. Base main 35
 Após reinstalação, lint/tipos/40 testes/build passaram novamente; Playwright repetido: 2/2 passaram. O lock do servidor antigo encerrado foi recuperado pelo comando conservador (PID comprovadamente inexistente, lock preservado em cópia). Importação do catálogo operacional foi idempotente: zero produtos/categorias acrescentados, sem reset. Dados existentes preservados. Servidores de teste encerrados; iniciar com 02_INICIAR_LOJA.bat.
 
 Próximo passo: revisão humana do PR. Não existem fases de implementação pendentes; merge, deploy e conversão para produção continuam a exigir autorização específica. O historial anterior de gates fica conservado como registo, substituído pela aprovação global posterior.
+
+## Fase 7 — Aperfeiçoamento da demonstração (26/10/2026)
+
+Autorizada pelo utilizador: testar em profundidade, melhorar design, espaços, tamanhos e textos, sem produção. Mantida a identidade escura/laranja. Referências consultadas: apresentação por benefícios Apple AirPods Pro (https://www.apple.com/pt/airpods-pro/) e organização de catálogo IKEA (https://www.ikea.com/pt/pt/cat/produtos-products/). Sem copiar ativos ou conteúdos. Implementação e revisão em curso na branch de integração; PR #2 será atualizado sem merge. A referência anterior à Fase 7 de produção não se aplica a esta autorização.
+
+Fase 7 concluída: navegação simplificada, tipografia/espaçamento responsivos, homepage com dois percursos e destaques mais cedo, FAQ, catálogo compacto no mobile, textos de formulários/confirmacões revistos e gestão visual mais consistente. Corrigidos salto para conteúdo e edição de quantidade no carrinho. Sem alterações à persistência operacional.
+
+Validação final: lint/TypeScript/build e 40 testes Vitest/RTL passaram; 18 verificações HTTP passaram; 10 testes Playwright passaram (49,9 s), incluindo sete páginas × quatro larguras, teclado, pesquisa/paginação, categorias CRUD, quantidade inválida/válida/remoção e erro recuperável de API. Axe: zero violações nos scans WCAG 2 A/AA e 2.1 AA das sete páginas a 390 px. Auditoria npm runtime: zero alertas. Capturas desktop/mobile inspecionadas e versionadas. Limites do teste manual/automático em phase-7-ux-review.md. Produção continua fora do âmbito; nenhuma alternativa de identidade precisou de decisão adicional.
