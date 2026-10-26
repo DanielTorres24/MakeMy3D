@@ -30,7 +30,7 @@ test('mobile: catálogo e formulário de orçamento sem overflow horizontal',asy
  await page.setViewportSize({width:390,height:844});await page.goto('/catalogo');
  await expect(page.locator('main.catalog-page')).toBeVisible();expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
  await page.screenshot({path:'work/playwright-catalog-mobile.png',fullPage:true});
- await page.goto('/orcamento');await page.getByLabel('O que pretende imprimir ou modelar?').fill('Peça de substituição demonstrativa para ensaio');
+ await page.goto('/orcamento');await page.getByLabel('O que pretendes imprimir ou modelar?').fill('Peça de substituição demonstrativa para ensaio');
  await page.getByLabel('Nome',{exact:true}).fill('Orçamento Mobile');await page.getByLabel('Email',{exact:true}).fill('mobile@example.invalid');await page.getByRole('checkbox').check();
  await page.getByRole('button',{name:'Enviar pedido de orçamento →'}).click();await expect(page.getByRole('heading',{name:'Orçamento registado'})).toBeVisible();
  expect(await page.evaluate(()=>document.documentElement.scrollWidth<=window.innerWidth)).toBe(true);
