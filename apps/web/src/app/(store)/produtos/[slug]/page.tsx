@@ -1,0 +1,22 @@
+import { cache } from 'react';
+import { ProductCustomizer } from '@/components/commerce/product-customizer';
+import type { Metadata } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { notFound } from 'next/navigation';
+import { formatPrice, ProductGrid } from '@/components/catalog';
+import { getRepository } from '@/server/repository';
+import { findPublicProduct } from '@/server/services/catalog-service';
+export const dynamic = 'force-dynamic';
+const getProduct = cache(async (slug: string) => findPublicProduct(await getRepository().read(), slug));
+type Props = { params: Promise<{ slug: string }> };
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const result = await getProduct((await params).slug);
+  return result ? { title: result.product.name, description: result.product.summary || result.product.description.slice(0, 160) } : { title: 'Artigo não encontrado' };
+}
+export default async function ProductPage({ params }: Props) {
+  const result = await getProduct((await params).slug);
+  if (!result) notFound();
+  const { product, category, related } = result;
+  return <main id="conteudo" className="product-page"><nav className="breadcrumbs" aria-label="Percurso"><Link href="/">Início</Link><span aria-hidden="true">/</span><Link href="/catalogo">Catálogo</Link><span aria-hidden="true">/</span><Link href={`/catalogo?category=${category.slug}`}>{category.name}</Link></nav><section className="product-detail"><div><div className="detail-art">{product.image ? <Image src={product.image} width={640} height={480} alt={product.imageAlt || 'Ilustração abstrata de conceito.'} priority /> : <div className="art-fallback">Ilustração indisponível</div>}</div><p className="art-caption">Ilustração de conceito. A forma final depende do {product.kind === 'service' ? 'serviço' : 'objeto'}.</p></div><div className="detail-copy"><p className="eyebrow">{product.kind === 'service' ? 'SERVIÇO 3D' : 'PERSONALIZA À TUA MEDIDA'} / {category.name}</p><h1>{product.name}</h1><p className="detail-summary">{product.summary || product.description}</p><p className="detail-price">{formatPrice(product.priceCents)}<span>Preço indicativo</span></p><p className="muted small">{product.priceNote || 'Valor de demonstração; não constitui proposta comercial.'}</p><dl className="product-specs"><div><dt>Tipo</dt><dd>{product.kind === 'service' ? 'Serviço' : 'Objeto físico — conceito'}</dd></div><div><dt>Materiais de referência</dt><dd>{product.materials?.length ? product.materials.join(' · ') : 'A definir no projeto'}</dd></div><div><dt>{product.kind === 'service' ? 'Âmbito e dimensões' : 'Dimensões indicativas'}</dt><dd>{product.dimensions || 'A definir após análise do projeto'}</dd></div></dl><p className="muted small">{product.dimensionsNote || 'Condições, entregáveis e viabilidade sujeitos a confirmação.'}</p><div className="notice product-notice">Demonstração local: os pedidos são simulados e não existe cobrança.</div>{product.priceCents !== null ? <ProductCustomizer productId={product.id} materials={product.materials} /> : <Link className="button button-primary" href="/orcamento">Pedir orçamento</Link>}<Link href={`/catalogo?category=${category.slug}`} className="text-link">Explorar esta categoria <span aria-hidden="true">→</span></Link></div></section><section className="detail-information"><div><p className="eyebrow">SOBRE A PEÇA</p><h2>Os detalhes da tua ideia.</h2></div><div><p>{product.description}</p><p className="muted">{product.kind === 'physical' ? 'As opções de material são referências de conceção. Resistência, encaixes, acabamento e adequação ao uso precisam de validação antes de produzir uma peça.' : 'Esta oferta descreve uma possibilidade de serviço; não garante prazo, disponibilidade nem preço de execução.'}</p><details><summary>Origem e direitos do conteúdo</summary><p>{product.provenance.author || 'Autoria não indicada'}</p><p>{product.provenance.licenceNote}</p>{product.provenance.sourceUrl && <p><a className="text-link" href={product.provenance.sourceUrl} rel="noreferrer">Consultar fonte</a></p>}</details></div></section>{related.length > 0 && <section className="related-products"><div className="section-heading"><div><p className="eyebrow">CONTINUA A EXPLORAR</p><h2>Mais nesta categoria.</h2></div><Link className="text-link" href={`/catalogo?category=${category.slug}`}>Ver todos →</Link></div><ProductGrid products={related} categories={[category]} /></section>}</main>;
+}
