@@ -1,3 +1,5 @@
+import { writeFile, mkdir } from 'node:fs/promises';
+import path from 'node:path';
 import { test, expect } from '@playwright/test';
 import AxeBuilder from '@axe-core/playwright';
 
@@ -18,6 +20,26 @@ for (const width of [320, 390, 768, 1440]) {
   }
   await page.goto('/');await page.waitForLoadState('networkidle');
   await page.screenshot({path:`work/ux-home-${width}.png`,fullPage:true});
+  if (process.env.QA_EXPORT_DIR && width === 1440) {
+   const output=process.env.QA_EXPORT_DIR;await mkdir(output,{recursive:true});
+   await page.screenshot({path:path.join(output,'makemy3d-atelier-desktop.png')});
+   const html=await page.evaluate(async()=>{
+    const styles=[...document.styleSheets].map(sheet=>[...sheet.cssRules].map(rule=>rule.cssText).join('\n')).join('\n');
+    const images=await Promise.all([...document.images].map(async img=>{
+     const response=await fetch(img.currentSrc||img.src);const blob=await response.blob();
+     return await new Promise<string>(resolve=>{const reader=new FileReader();reader.onload=()=>resolve(String(reader.result));reader.readAsDataURL(blob);});
+    }));
+    const copy=document.documentElement.cloneNode(true) as HTMLElement;
+    copy.querySelectorAll('script,link,style').forEach(node=>node.remove());
+    copy.querySelectorAll('img').forEach((img,index)=>{img.src=images[index];img.removeAttribute('srcset');img.loading='eager';});
+    copy.querySelectorAll('a').forEach(a=>{const href=a.getAttribute('href')||'';if(href.startsWith('/#'))a.setAttribute('href',href.slice(1));else if(!href.startsWith('#'))a.setAttribute('href','#preview-note');});
+    const style=document.createElement('style');style.textContent=styles;copy.querySelector('head')!.append(style);
+    const note=document.createElement('p');note.id='preview-note';note.textContent='Pré-visualização estática do design. Para comprar ou gerir pedidos de teste, abre a aplicação local.';note.style.cssText='padding:16px;margin:0;background:#f6eee6;color:#232522;text-align:center';copy.querySelector('body')!.prepend(note);
+    return '<!doctype html>'+copy.outerHTML;
+   });
+   await writeFile(path.join(output,'makemy3d-atelier.html'),html);
+  }
+
   await page.goto('/produtos/divisoria-de-gaveta');await page.waitForLoadState('networkidle');
   await page.screenshot({path:`work/ux-product-${width}.png`,fullPage:true});
  });
